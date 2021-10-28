@@ -25,24 +25,21 @@
     "name": "Pierre Donias",
     "email": "pierre.donias@gmail.com"
   },
-  "preferGlobal": false,
-  "bin": {},
   "engines": {
     "node": ">=8.3"
   },
-  "dependencies": {},
   "devDependencies": {
-    "eslint": "^6.5.1",
-    "eslint-config-prettier": "^6.4.0",
-    "eslint-config-standard": "^14.1.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-node": "^10.0.0",
-    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.1",
     "eslint-plugin-standard": "^4.0.0",
-    "husky": "^3.0.8",
-    "jest": "^24.5.0",
-    "lint-staged": "^9.4.2",
-    "prettier": "^1.16.4"
+    "husky": "^4.3.8",
+    "jest": "^27.3.1",
+    "lint-staged": "^11.2.6",
+    "prettier": "^2.4.1"
   },
   "scripts": {
     "dev-test": "jest --bail --watch",
@@ -55,14 +52,12 @@
     }
   },
   "jest": {
-    "collectCoverage": true,
     "testEnvironment": "node",
     "testRegex": "\\.spec\\.js$"
   },
   "lint-staged": {
     "*.js": [
       "prettier --write",
-      "git add",
       "eslint --ignore-pattern '!*'",
       "jest --findRelatedTests --passWithNoTests"
     ]
