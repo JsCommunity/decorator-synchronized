@@ -1,6 +1,8 @@
+"use strict";
+
 const DEFAULT_KEY_FUNCTION = arg => arg;
 
-export function synchronize() {
+function synchronize() {
   let queue = Promise.resolve();
   return fn =>
     function() {
@@ -9,6 +11,7 @@ export function synchronize() {
       return (queue = queue.then(makeCall, makeCall));
     };
 }
+exports.synchronize = synchronize;
 synchronize.withKey = function synchronizeWithKey(
   keyFunction = DEFAULT_KEY_FUNCTION
 ) {
@@ -33,7 +36,7 @@ synchronize.withKey = function synchronizeWithKey(
     };
 };
 
-export function synchronizeMethod() {
+function synchronizeMethod() {
   const queues = new WeakMap();
   return method =>
     function() {
@@ -48,6 +51,7 @@ export function synchronizeMethod() {
       return queue;
     };
 }
+exports.synchronizeMethod = synchronizeMethod;
 synchronizeMethod.withKey = function synchronizeMethodWithKey(
   keyFunction = DEFAULT_KEY_FUNCTION
 ) {
@@ -92,7 +96,8 @@ const toDecorator = (wrapFn, wrapMd = wrapFn) => (...args) => {
         };
 };
 
-export const synchronized = toDecorator(synchronize, synchronizeMethod);
+const synchronized = toDecorator(synchronize, synchronizeMethod);
+exports.synchronized = synchronized;
 synchronized.withKey = toDecorator(
   synchronize.withKey,
   synchronizeMethod.withKey

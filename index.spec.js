@@ -1,6 +1,19 @@
 /* eslint-env jest */
 
-import { synchronized } from "./";
+const { synchronized } = require("./");
+
+const decorate = (klass, field, decorator) => {
+  const { prototype } = klass;
+  Object.defineProperty(
+    prototype,
+    field,
+    decorator(
+      prototype,
+      field,
+      Object.getOwnPropertyDescriptor(prototype, field)
+    )
+  );
+};
 
 describe("synchronized functions", () => {
   it("should synchronize async functions", () => {
@@ -61,7 +74,6 @@ describe("synchronized methods", () => {
     let i = 0;
 
     class Test {
-      @synchronized()
       fn(expectedI) {
         expect(i).toBe(expectedI);
 
@@ -70,6 +82,7 @@ describe("synchronized methods", () => {
         });
       }
     }
+    decorate(Test, "fn", synchronized());
 
     const t0 = new Test();
     const t1 = new Test();
@@ -82,7 +95,6 @@ describe("synchronized methods", () => {
   it("should synchronize async static methods", () => {
     let i = 0;
     class Test {
-      @synchronized()
       static fn(expectedI, result) {
         expect(i).toBe(expectedI);
 
@@ -92,6 +104,7 @@ describe("synchronized methods", () => {
         });
       }
     }
+    Test.fn = synchronized()(Test.fn);
 
     const { fn } = Test;
 
@@ -159,12 +172,12 @@ describe("synchronized methods with keys", () => {
         this.counters = [];
       }
 
-      @synchronized.withKey()
       async fn(key, result) {
         this.counters[key] = (this.counters[key] || 0) + 1;
         return result;
       }
     }
+    decorate(Test, "fn", synchronized.withKey());
 
     const t0 = new Test();
     const t1 = new Test();
@@ -192,12 +205,16 @@ describe("synchronized methods with keys", () => {
         this.counters = [];
       }
 
-      @synchronized.withKey(({ key }) => key)
       async fn({ key }, result) {
         this.counters[key] = (this.counters[key] || 0) + 1;
         return result;
       }
     }
+    decorate(
+      Test,
+      "fn",
+      synchronized.withKey(({ key }) => key)
+    );
 
     const t0 = new Test();
     const t1 = new Test();
