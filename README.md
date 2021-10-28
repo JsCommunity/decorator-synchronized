@@ -21,7 +21,7 @@ import { synchronized } from "decorator-synchronized";
 
 let i = 0;
 
-const fn = synchronized(() => {
+const fn = synchronized()() => {
   console.log(i);
   return Promise.resolve().then(() => {
     i++;
